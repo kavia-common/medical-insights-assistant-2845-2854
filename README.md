@@ -18,10 +18,11 @@ Quick start:
 Primary endpoints (see /docs):
 - GET /                         -> Health check
 - /patients/*                   -> Patient CRUD
-- /interviews/*                 -> Interview CRUD and steps
-- /agents/*                     -> Orchestration endpoints
+- /interviews/*                 -> Interview file I/O (save/read/delete by patient_id)
+- /agents/*                     -> Advisor on saved interview text
 - /files/*                      -> OneDrive/local file read/write
 
 Notes:
+- Interviews are stored as {ONEDRIVE_BASE_PATH}/Interview/{patient_id}.txt.
 - Vector DB URL/API key pulled from env. The client expects POST {VECTOR_DB_URL}/query.
 - Storage directories are created at startup if missing.

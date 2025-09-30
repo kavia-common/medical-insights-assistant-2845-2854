@@ -18,3 +18,12 @@ Environment variables (see .env.example):
   - Override these via env vars when deploying with mounted volumes.
 - VECTOR_DB_URL, VECTOR_DB_API_KEY
 - CORS_ALLOW_ORIGINS
+
+Interview storage behavior:
+- Interviews are now stored as plain text files in the OneDrive Interview folder.
+- Path: {ONEDRIVE_BASE_PATH}/Interview/{patient_id}.txt
+- Endpoints:
+  - POST /interviews/{patient_id} with body { "content": "<text>" } -> save/update text
+  - GET /interviews/{patient_id} -> fetch text
+  - DELETE /interviews/{patient_id} -> remove file
+  - POST /agents/advisor/run?patient_id=... -> run advisor on the saved text
