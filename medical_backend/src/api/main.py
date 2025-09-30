@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import patients, interviews, agents, files
+from .routers import interview_session
 from .core.logging_conf import configure_logging
 from .core.config import get_settings
 from .core.openapi import build_openapi, openapi_tags, swagger_ui_parameters
@@ -61,6 +62,7 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(patients.router)
     app.include_router(interviews.router)
+    app.include_router(interview_session.router)
     app.include_router(agents.router)
     app.include_router(files.router)
 

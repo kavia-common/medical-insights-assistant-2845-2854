@@ -18,7 +18,8 @@ Quick start:
 Primary endpoints (see /docs):
 - GET /                         -> Health check
 - /patients/*                   -> Patient CRUD
-- /interviews/*                 -> Interview file I/O (save/read/delete by patient_id)
+- /interview-session/*          -> Agent-driven interactive interviews (chatbot style). Writes transcript to OneDrive.
+- /interviews/*                 -> Transcript read/delete (manual write is deprecated)
 - /agents/*                     -> Advisor on saved interview text
 - /files/*                      -> OneDrive/local file read/write
 

@@ -11,15 +11,16 @@ router = APIRouter(prefix="/interviews", tags=["interviews"])
 @router.post(
     "/{patient_id}",
     response_model=OperationStatus,
-    summary="Save interview text",
-    description="Save the provided interview text directly to OneDrive as {patient_id}.txt under the Interview folder.",
+    summary="Save interview text (deprecated)",
+    description="Deprecated: Manual submission of interview text. Use /interview-session endpoints for agent-driven interviews.",
+    deprecated=True,
 )
 # PUBLIC_INTERFACE
 def save_interview_text(
     patient_id: str = Path(..., description="Patient ID used as filename"),
     content: str = Body(..., embed=True, description="Full interview text to store"),
 ) -> OperationStatus:
-    """Save interview text to OneDrive using patient_id as filename."""
+    """Deprecated: Manual interview text submission. Use /interview-session instead."""
     try:
         rel = interview_files_repo.write_text(patient_id, content)
         return OperationStatus(status="ok", detail=f"wrote:{rel}")

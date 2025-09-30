@@ -19,11 +19,16 @@ Environment variables (see .env.example):
 - VECTOR_DB_URL, VECTOR_DB_API_KEY
 - CORS_ALLOW_ORIGINS
 
-Interview storage behavior:
-- Interviews are now stored as plain text files in the OneDrive Interview folder.
+Interview storage and session behavior:
+- Interviews are stored as plain text files in the OneDrive Interview folder.
 - Path: {ONEDRIVE_BASE_PATH}/Interview/{patient_id}.txt
-- Endpoints:
-  - POST /interviews/{patient_id} with body { "content": "<text>" } -> save/update text
+- Agent-driven Interview Session (recommended):
+  - POST /interview-session/{patient_id}/start { chief_complaint?, context? } -> returns initial questions
+  - POST /interview-session/{patient_id}/answer { answer } -> returns next adaptive question(s)
+  - POST /interview-session/{patient_id}/end -> writes full transcript to OneDrive as {patient_id}.txt
+- File utilities (compatibility):
   - GET /interviews/{patient_id} -> fetch text
   - DELETE /interviews/{patient_id} -> remove file
   - POST /agents/advisor/run?patient_id=... -> run advisor on the saved text
+- Deprecated:
+  - POST /interviews/{patient_id} { content } -> manual write (use session endpoints instead)
