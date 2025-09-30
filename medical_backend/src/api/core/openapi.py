@@ -1,5 +1,6 @@
 from typing import Any, Dict, List
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from .config import get_settings
 
 
@@ -36,12 +37,26 @@ def build_openapi(app: FastAPI):
     """
     Build the OpenAPI schema once and cache it on the app.
     Adds theme metadata into components.extensions for clarity.
+
+    Note:
+    - Do NOT call app.openapi() here as it will point back to this function after override,
+      causing recursion and a 500 at /openapi.json. Use fastapi.openapi.utils.get_openapi.
     """
     # PUBLIC_INTERFACE
     def _openapi():
-        if app.openapi_schema:
+        # Return cached schema if present
+        if getattr(app, "openapi_schema", None):
             return app.openapi_schema
-        openapi_schema = app.openapi()
+
+        # Generate schema using FastAPI utility
+        openapi_schema = get_openapi(
+            title=app.title,
+            version=app.version,
+            description=app.description,
+            routes=app.routes,
+            tags=openapi_tags(),
+        )
+
         # Inject theme metadata
         theme = {
             "themeName": get_settings().THEME_NAME,
@@ -54,6 +69,9 @@ def build_openapi(app: FastAPI):
         if "components" not in openapi_schema:
             openapi_schema["components"] = {}
         openapi_schema["components"]["x-theme"] = theme
-        return openapi_schema
+
+        # Cache schema on app
+        app.openapi_schema = openapi_schema
+        return app.openapi_schema
 
     return _openapi
