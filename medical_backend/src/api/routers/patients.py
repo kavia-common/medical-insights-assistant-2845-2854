@@ -34,6 +34,27 @@ def list_patients() -> List[Patient]:
     return patients_repo.list()
 
 
+@router.get(
+    "/by-mrn/{mrn}",
+    response_model=Patient,
+    summary="Get patient by MRN",
+    description="Retrieve a patient using Medical Record Number (padding-insensitive for numeric MRNs).",
+)
+# PUBLIC_INTERFACE
+def get_patient_by_mrn(mrn: str) -> Patient:
+    """
+    Get patient by MRN.
+
+    Notes:
+    - If the MRN is numeric, leading zeros are ignored (e.g., 0001 == 1).
+    - If the MRN is alphanumeric, an exact match is required.
+    """
+    res = patients_repo.get_by_mrn(mrn)
+    if not res:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    return res
+
+
 @router.get("/{patient_id}", response_model=Patient, summary="Get patient", description="Retrieve a patient by ID.")
 # PUBLIC_INTERFACE
 def get_patient(patient_id: str) -> Patient:
@@ -48,7 +69,13 @@ def get_patient(patient_id: str) -> Patient:
 # PUBLIC_INTERFACE
 def update_patient(patient_id: str, payload: PatientUpdate) -> Patient:
     """Update a patient."""
-    res = patients_repo.update(patient_id, payload)
+    try:
+        res = patients_repo.update(patient_id, payload)
+    except ValueError as ve:
+        detail = str(ve)
+        if "already exists" in detail and "MRN" in detail:
+            raise HTTPException(status_code=409, detail=detail)
+        raise HTTPException(status_code=400, detail=detail)
     if not res:
         raise HTTPException(status_code=404, detail="Patient not found")
     return res
