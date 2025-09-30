@@ -6,7 +6,7 @@ from typing import Dict
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import patients, interviews, agents, files
+from .routers import patients, agents, files
 from .routers import interview_session
 from .core.logging_conf import configure_logging
 from .core.config import get_settings
@@ -61,7 +61,7 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(patients.router)
-    app.include_router(interviews.router)
+    # interviews router removed; interactive-only via /interview-session
     app.include_router(interview_session.router)
     app.include_router(agents.router)
     app.include_router(files.router)

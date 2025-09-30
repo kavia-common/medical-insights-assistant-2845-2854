@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Path, Body
 
 from ..services.interview_session_service import interview_session_service
 
-router = APIRouter(prefix="/interview-session", tags=["interviews"])
+router = APIRouter(prefix="/interview-session", tags=["interview-session"])
 
 
 class StartSessionRequest(BaseModel):
@@ -21,7 +21,7 @@ class AnswerRequest(BaseModel):
 @router.post(
     "/{patient_id}/start",
     summary="Start patient interview session",
-    description="Begin an agent-driven interview session. Returns initial questions by the agent.",
+    description="Begin an agent-driven interview session. Returns initial questions by the agent. This is the only supported way to create interviews.",
 )
 # PUBLIC_INTERFACE
 async def start_session(

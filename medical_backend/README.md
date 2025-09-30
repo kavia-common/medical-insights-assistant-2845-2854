@@ -22,13 +22,14 @@ Environment variables (see .env.example):
 Interview storage and session behavior:
 - Interviews are stored as plain text files in the OneDrive Interview folder.
 - Path: {ONEDRIVE_BASE_PATH}/Interview/{patient_id}.txt
-- Agent-driven Interview Session (recommended):
-  - POST /interview-session/{patient_id}/start { chief_complaint?, context? } -> returns initial questions
-  - POST /interview-session/{patient_id}/answer { answer } -> returns next adaptive question(s)
-  - POST /interview-session/{patient_id}/end -> writes full transcript to OneDrive as {patient_id}.txt
-- File utilities (compatibility):
-  - GET /interviews/{patient_id} -> fetch text
-  - DELETE /interviews/{patient_id} -> remove file
-  - POST /agents/advisor/run?patient_id=... -> run advisor on the saved text
-- Deprecated:
-  - POST /interviews/{patient_id} { content } -> manual write (use session endpoints instead)
+
+Interactive-only flow (agent-driven):
+- POST /interview-session/{patient_id}/start { chief_complaint?, context? } -> returns initial questions
+- POST /interview-session/{patient_id}/answer { answer } -> returns next adaptive question(s)
+- POST /interview-session/{patient_id}/end -> writes full transcript to OneDrive as {patient_id}.txt
+
+Advisor:
+- POST /agents/advisor/run?patient_id=... -> run advisor on the saved transcript text
+
+Note:
+- All legacy/manual interview CRUD endpoints have been removed. Only the interactive session endpoints are available.

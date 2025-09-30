@@ -12,7 +12,7 @@ def openapi_tags() -> List[Dict[str, Any]]:
     return [
         {"name": "health", "description": "Health and diagnostics."},
         {"name": "patients", "description": "Patient profile management."},
-        {"name": "interviews", "description": "Patient interview sessions and transcripts."},
+        {"name": "interview-session", "description": "Agent-driven, chatbot-style patient interviews."},
         {"name": "agents", "description": "Agent orchestration endpoints."},
         {"name": "files", "description": "OneDrive-synced file operations."},
         {"name": "realtime", "description": "WebSocket usage hints."},
