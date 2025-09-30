@@ -7,11 +7,24 @@ from ..repositories.patients_repo import patients_repo
 router = APIRouter(prefix="/patients", tags=["patients"])
 
 
-@router.post("", response_model=Patient, summary="Create patient", description="Create a new patient record.")
+@router.post(
+    "",
+    response_model=Patient,
+    summary="Create patient",
+    description="Create a new patient record.",
+    status_code=201,
+)
 # PUBLIC_INTERFACE
 def create_patient(payload: PatientCreate) -> Patient:
     """Create a patient."""
-    return patients_repo.create(payload)
+    try:
+        return patients_repo.create(payload)
+    except ValueError as ve:
+        # Detect MRN duplicate message and return 409 Conflict; otherwise 400 Bad Request
+        detail = str(ve)
+        if "already exists" in detail and "MRN" in detail:
+            raise HTTPException(status_code=409, detail=detail)
+        raise HTTPException(status_code=400, detail=detail)
 
 
 @router.get("", response_model=List[Patient], summary="List patients", description="List all patients.")

@@ -20,7 +20,24 @@ class PatientsRepository:
         """Create a new patient record."""
         now = datetime.utcnow()
         pid = str(uuid.uuid4())
-        item = Patient(id=pid, created_at=now, updated_at=now, **data.model_fields_set, **data.model_dump())
+
+        # Duplicate MRN guard if provided
+        payload = data.model_dump(exclude_none=True)
+        mrn = payload.get("mrn")
+        if mrn:
+            # Check across current items for duplicate MRN
+            for existing in self._items.values():
+                if existing.mrn == mrn:
+                    # Conflict: MRN already exists
+                    raise ValueError(f"MRN '{mrn}' already exists")
+
+        # Construct Patient safely from payload
+        item = Patient(
+            id=pid,
+            created_at=now,
+            updated_at=now,
+            **payload,
+        )
         self._items[pid] = item
         log.info("Created patient id=%s name=%s %s", pid, data.first_name, data.last_name)
         return item
