@@ -1,7 +1,8 @@
 import json
 import os
 
-from src.api.main import app
+# Import via absolute package path to be robust when run from project root
+from medical_backend.src.api.main import app  # type: ignore
 
 # Get the OpenAPI schema
 openapi_schema = app.openapi()
