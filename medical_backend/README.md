@@ -12,5 +12,9 @@
 Environment variables (see .env.example):
 - PORT, HOST, LOG_LEVEL, RELOAD, WORKERS
 - ONEDRIVE_BASE_PATH, STORAGE_BASE_PATH
+  - Defaults are set to writable paths under the workspace to avoid permission issues:
+    - ONEDRIVE_BASE_PATH: ./var/onedrive
+    - STORAGE_BASE_PATH: ./var/storage
+  - Override these via env vars when deploying with mounted volumes.
 - VECTOR_DB_URL, VECTOR_DB_API_KEY
 - CORS_ALLOW_ORIGINS

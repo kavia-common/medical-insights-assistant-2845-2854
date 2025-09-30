@@ -13,8 +13,10 @@ class Settings(BaseModel):
     THEME_SECONDARY: str = Field(default="#F59E0B", description="Secondary color (amber).")
 
     # Storage paths (OneDrive-synced and local storage)
-    ONEDRIVE_BASE_PATH: str = Field(default_factory=lambda: os.getenv("ONEDRIVE_BASE_PATH", "/data/onedrive"))
-    STORAGE_BASE_PATH: str = Field(default_factory=lambda: os.getenv("STORAGE_BASE_PATH", "/data/storage"))
+    # Defaults point to writable relative paths inside the application workspace to avoid permission errors
+    # in environments where writing to /data is not allowed. These can be overridden via environment variables.
+    ONEDRIVE_BASE_PATH: str = Field(default_factory=lambda: os.getenv("ONEDRIVE_BASE_PATH", os.path.abspath("./var/onedrive")))
+    STORAGE_BASE_PATH: str = Field(default_factory=lambda: os.getenv("STORAGE_BASE_PATH", os.path.abspath("./var/storage")))
 
     # Vector DB connectivity (assumed provided by system design)
     VECTOR_DB_URL: str = Field(default_factory=lambda: os.getenv("VECTOR_DB_URL", "http://medical_vector_database:8000"))
